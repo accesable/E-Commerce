@@ -80,5 +80,82 @@ Remember when run `npm run build` make sure the project directory of the local m
   }
 ```
 ---
+## Creating Middlewares in ASP.NET core
+A Middleware class
+```C#
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
+public class CustomMiddleware
+{
+    private readonly RequestDelegate _next;
 
+    public CustomMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        Console.WriteLine("Request Headers:");
+        foreach (var header in context.Request.Headers)
+        {
+            Console.WriteLine($"{header.Key}: {header.Value}");
+        }
+
+        // Call the next delegate/middleware in the pipeline
+        await _next(context);
+                // Log response headers
+        Console.WriteLine("Response Headers:");
+        foreach (var header in context.Response.Headers)
+        {
+            Console.WriteLine($"{header.Key}: {header.Value}");
+        }
+    }
+}
+```
+Make an Extension Method for using this middleware
+```C#
+using Microsoft.AspNetCore.Builder;
+
+public static class CustomMiddlewareExtension
+{
+    public static IApplicationBuilder UseCustomMiddlewareExtension(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<CustomMiddleware>();
+    }
+}
+```
+Use it in `Program.cs`
+```C#
+app.UseCustomMiddlewareExtension();
+```
+---
+## `IEndpoints` In ASP.NET core
+this interfaces responbile for configuring Endpoints 
+```C#
+app.MapGet("/test",async (context) =>{
+    await context.Response.WriteAsync("Testing Endpoint");
+});
+```
+## Create A Controller 
+This Based on The Route Configuration `app.MapControllerRoute()` at `Program.cs`
+```C#
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace E_Commerces.Controllers;
+
+public class TestController : Controller{
+    public string Index(){
+        return "This is A Controller for Testing";
+    }
+    // This route accept http://localhost:5226/test/welcome/2?name=nhutanh
+    // And http://localhost:5226/test/welcome?id=1&name=nhutanh
+    // http://localhost:5226/test/welcome?name=nhutanh
+    public string Welcome(string name ,int ID = -1){
+        return HtmlEncoder.Default.Encode($"Welcome to the Test Controller Platform Your ID {ID} and name : {name}");   
+    }
+}
+```

@@ -25,21 +25,14 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+
 app.UseRouting();
 
-app.MapGet("/test",async (context) =>{
-    await context.Response.WriteAsync("Testing Endpoint");
-});
-
-app.MapGet("/testAPI", async (context) =>{
-    await context.Response.WriteAsJsonAsync(new {Name = "Nhutanh", Age = 20});
-});
-
-
+app.UseAuthentication();
 app.UseAuthorization();
-app.UseAuthorization();
-app.UseCustomMiddlewareExtension();
-app.MapControllerRoute(
+
+app.MapControllerRoute( 
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 app.Run();
