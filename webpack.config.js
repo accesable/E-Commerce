@@ -22,6 +22,12 @@ module.exports = {
     rules: [
       {
         // SCSS to CSS conversion
+        test: /\.css$/,
+        use: [
+          "style-loader", // Or MiniCssExtractPlugin.loader for production
+          "css-loader",
+          "postcss-loader", // Make sure postcss-loader is included
+        ],
         test: /\.(sa|sc)ss$/,
         use: [
           MiniCssExtractPlugin.loader,

@@ -1,17 +1,20 @@
 using E_Commerces.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using E_Commreces.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Load the Conntection String
 String ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new Exception("Connection String Not Founded");
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(
     options=>options.UseSqlServer(ConnectionString)
 );
-
+builder.Services.AddRazorPages();
+builder.Services.AddDbContext<RazorPageDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'RazorPageDbContext' not found.")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +30,7 @@ app.UseStaticFiles();
 
 
 app.UseRouting();
+app.MapRazorPages();
 
 app.UseAuthentication();
 app.UseAuthorization();

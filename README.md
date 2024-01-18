@@ -37,7 +37,7 @@ public class ApplicationDbContext : DbContext
 ```
 Most Used EF commands
 ```bash
-dotnet ef migrations add InitialCreate --output-dir Your/Directory
+dotnet ef migrations add InitialCreate --output-dir Your/Directory --context ContextClassName
 dotnet ef migrations list
 dotnet ef migrations remove
 dotnet ef database update
@@ -159,3 +159,15 @@ public class TestController : Controller{
     }
 }
 ```
+## ASP.NET Scaffolding
+
+### For Razor Pages
+```bash
+dotnet aspnet-codegenerator razorpage -h
+dotnet aspnet-codegenerator razorpage -m Product -dc E_commreces.Models.ApplicationDbContext -udl -outDir Pages/Products --referenceScriptLibraries --databaseProvider sqlserver
+```
+- `-udl` : Use default Layout
+- `-dc` : Create a DBContext based on that given models
+- `-m` : Model Class name
+- `-outDir` : Page output directory
+- `--referenceScriptLibraries` : Adds `_ValidationScriptsPartial` to Edit and Create pages
